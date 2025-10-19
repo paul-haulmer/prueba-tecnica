@@ -9,7 +9,7 @@ Microservicio en Laravel 12 para gestionar paquetes logísticos: importar lotes 
 - Docker y Docker Compose
 
 ## Ejecución con Docker
-1. Crear el `.env` (si no existe) y define `APP_KEY` o déjalo vacío para generarlo dentro del contenedor.
+1. Crear el `.env` copiando el `.env.example` en `.env` (crear vacío y pegar contenido)
 2. Levantar el microservicio:
    ```bash
    docker compose up --build -d
@@ -18,14 +18,16 @@ Microservicio en Laravel 12 para gestionar paquetes logísticos: importar lotes 
    - API: `http://localhost:8000/api`
    - Swagger UI: `http://localhost:8000/api/documentation`
 
-3. En caso de querer generar la clave de la app desde Docker ejecutr lo siguiente:
+3. El último paso es generar la llave criptográfica principal de Laravel, luego de crearse el contendor "logistics-app" en el directorio raíz se debe ejcutar lo siguiente:
    ```bash
    docker compose exec app php artisan key:generate
    ```
 
-La ejecución creará 2 contenedoses:
+La ejecución de todos estos pasos debe generar 2 contenedoses:
 1. logistics-app: Contiene PHP-FPM y ejecuta Laravel (migraciones, seeds, artisan). No expone los puertos directamente, solo atiende peticiones fastCGI.
 2. logistics-nginx: Actua como servidor web "frontal", escucha en 80 (mapeado al 8000 del host) y reenvía las solicitudes PHP al socket/host app:9000.
+
+Si ambos contenedores estan levantados y en status running significa que el microservicio ya esta listo para ser útilizado.
 
 ## Endpoints principales
 Todos los endpoints requieren el encabezado `X-API-Key: haulmer-2025-apikey` (se exponen en este MD únicamente porque es una prueba técnica, en contextos normales no agregaria registros de la apikey real).
