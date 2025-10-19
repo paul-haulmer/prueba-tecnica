@@ -1,0 +1,452 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Logistics Packages API",
+        "description": "Microservicio para importar, consultar, actualizar y eliminar paquetes.",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost/api",
+            "description": "Servidor principal"
+        },
+        {
+            "url": "/api"
+        }
+    ],
+    "paths": {
+        "/api/packages/import": {
+            "post": {
+                "tags": [
+                    "Packages"
+                ],
+                "summary": "Importar paquetes desde sistemas externos",
+                "operationId": "66a8f2c307ca6a36c020f9b0ed8028f4",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PackageImportRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Paquetes importados correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PackageCollectionResponse"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Se detectaron paquetes duplicados",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PackageConflictResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "API Key inválida",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PackageErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "packages_apikey": []
+                    }
+                ]
+            }
+        },
+        "/api/packages": {
+            "get": {
+                "tags": [
+                    "Packages"
+                ],
+                "summary": "Listar paquetes con filtros opcionales",
+                "operationId": "d9fb6a911d0e9c021e8a242a974799f2",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filtrar por estado",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "pending",
+                                "in_transit",
+                                "delivered"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "priority",
+                        "in": "query",
+                        "description": "Filtrar por prioridad",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "low",
+                                "medium",
+                                "high"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Listado de paquetes",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PackageCollectionResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "API Key inválida",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PackageErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "packages_apikey": []
+                    }
+                ]
+            }
+        },
+        "/api/packages/{packageId}/status": {
+            "patch": {
+                "tags": [
+                    "Packages"
+                ],
+                "summary": "Actualizar el estado de un paquete",
+                "operationId": "909abe32913f0a5565df25d84e6b4954",
+                "parameters": [
+                    {
+                        "name": "packageId",
+                        "in": "path",
+                        "description": "Identificador único del paquete",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "PKG-0001"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "status"
+                                ],
+                                "properties": {
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "pending",
+                                            "in_transit",
+                                            "delivered"
+                                        ],
+                                        "example": "delivered"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Estado actualizado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PackageResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Paquete no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PackageErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "API Key inválida",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PackageErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "packages_apikey": []
+                    }
+                ]
+            }
+        },
+        "/api/packages/{packageId}": {
+            "delete": {
+                "tags": [
+                    "Packages"
+                ],
+                "summary": "Eliminar un paquete pendiente",
+                "operationId": "b2b8425038c16fd09fd76425e5137d8f",
+                "parameters": [
+                    {
+                        "name": "packageId",
+                        "in": "path",
+                        "description": "Identificador único del paquete",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "PKG-0001"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Paquete eliminado"
+                    },
+                    "400": {
+                        "description": "El paquete no está en estado pendiente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PackageErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Paquete no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PackageErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "API Key inválida",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PackageErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "packages_apikey": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "PackageImportItem": {
+                "required": [
+                    "id",
+                    "priority",
+                    "status",
+                    "imported_at"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "example": "PKG-0007"
+                    },
+                    "priority": {
+                        "type": "string",
+                        "enum": [
+                            "low",
+                            "medium",
+                            "high"
+                        ],
+                        "example": "medium"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "pending",
+                            "in_transit",
+                            "delivered"
+                        ],
+                        "example": "pending"
+                    },
+                    "imported_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-10-18T15:30:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "PackageResource": {
+                "required": [
+                    "id",
+                    "priority",
+                    "status",
+                    "imported_at"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "example": "PKG-0007"
+                    },
+                    "priority": {
+                        "description": "Prioridad del paquete",
+                        "type": "string",
+                        "enum": [
+                            "low",
+                            "medium",
+                            "high"
+                        ],
+                        "example": "high"
+                    },
+                    "status": {
+                        "description": "Estado actual del paquete",
+                        "type": "string",
+                        "enum": [
+                            "pending",
+                            "in_transit",
+                            "delivered"
+                        ],
+                        "example": "pending"
+                    },
+                    "imported_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-10-18T15:30:00Z"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-10-19T12:00:00Z",
+                        "nullable": true
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-10-19T12:00:00Z",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "PackageImportRequest": {
+                "properties": {
+                    "packages": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PackageImportItem"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "PackageCollectionResponse": {
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PackageResource"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "PackageErrorResponse": {
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "Detalle del error."
+                    }
+                },
+                "type": "object"
+            },
+            "PackageConflictResponse": {
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "Packages already exist with these IDs."
+                    },
+                    "duplicate_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": [
+                            "PKG-0001",
+                            "PKG-0002"
+                        ]
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "packages_apikey": {
+                "type": "apiKey",
+                "description": "Provide the apikey value in the X-API-Key header.",
+                "name": "X-API-Key",
+                "in": "header"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Packages",
+            "description": "Operaciones para gestionar paquetes logísticos"
+        }
+    ],
+    "security": [
+        {
+            "packages_apikey": []
+        }
+    ]
+}
