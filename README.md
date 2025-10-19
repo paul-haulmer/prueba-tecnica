@@ -83,7 +83,7 @@ curl -X POST http://127.0.0.1:8000/api/packages/import \
 ## Acceso a la base de datos (en caso de querer revisar)
 La aplicación utiliza SQLite. El archivo se encuentra en `database/database.sqlite`.
 
-- **Dentro del contenedor** (útil si levantaste Docker):
+- **Dentro del contenedor**:
   ```bash
   docker compose exec app sqlite3 database/database.sqlite
   ```
