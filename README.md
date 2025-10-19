@@ -22,21 +22,30 @@ php artisan serve
 La API quedará disponible en `http://127.0.0.1:8000/api`. Recuerda incluir el encabezado `X-API-Key: {$apikey} en cada petición.
 
 ## Ejecución con Docker
-```bash
-docker compose up --build -d
-```
+1. Crea tu `.env` (si no existe) y define `APP_KEY` o déjalo vacío para generarlo dentro del contenedor.
+2. Levanta la pila:
+   ```bash
+   docker compose up --build -d
+   ```
 
-- API: `http://localhost:8000/api`
-- Swagger UI: `http://localhost:8000/api/documentation`
+   - API: `http://localhost:8000/api`
+   - Swagger UI: `http://localhost:8000/api/documentation`
 
-El contenedor `app` ejecuta migraciones, sembrado inicial y genera la documentación durante el arranque. Para comandos adicionales:
+3. Si necesitas generar la clave de la app desde Docker:
+   ```bash
+   docker compose exec app php artisan key:generate
+   ```
+
+Los volúmenes declarados (`vendor` y `storage`) permiten que las dependencias PHP y los archivos generados persistan entre reinicios, mientras que el código fuente se monta directamente desde el host para un flujo de trabajo en caliente. Además, durante cada arranque el entrypoint ejecuta migraciones, seeds y la regeneración de la documentación Swagger.
+
+Comandos útiles adicionales:
 ```bash
 docker compose exec app php artisan migrate --seed
 docker compose exec app php artisan test
 ```
 
 ## Endpoints principales
-Todos los endpoints requieren el encabezado `X-API-Key: {$apikey}`.
+Todos los endpoints requieren el encabezado `X-API-Key: haulmer-2025-apikey`.
 
 | Método | Ruta                         | Descripción                                        |
 |--------|------------------------------|----------------------------------------------------|
@@ -49,7 +58,7 @@ Todos los endpoints requieren el encabezado `X-API-Key: {$apikey}`.
 ```bash
 curl -X POST http://127.0.0.1:8000/api/packages/import \
   -H "Content-Type: application/json" \
-  -H "X-API-Key: apikey" \
+  -H "X-API-Key: haulmer-2025-apikey" \
   -d '{
     "packages": [
       {

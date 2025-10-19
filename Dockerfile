@@ -2,7 +2,7 @@ FROM composer:2.8 AS vendor
 
 WORKDIR /app
 COPY composer.json composer.lock ./
-RUN composer install --no-dev --no-ansi --no-interaction --no-progress --prefer-dist
+RUN composer install --no-dev --no-ansi --no-interaction --no-progress --prefer-dist --no-scripts
 
 FROM php:8.2-fpm-alpine
 
