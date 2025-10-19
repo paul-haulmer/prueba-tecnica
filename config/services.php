@@ -36,7 +36,7 @@ return [
     ],
 
     'packages' => [
-        'api_key' => env('LOGISTICS_API_KEY', 'haulmer-2025-apikey'),
+        'api_key' => env('LOGISTICS_API_KEY'),
     ],
 
 ];

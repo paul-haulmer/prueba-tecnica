@@ -16,12 +16,6 @@ use Illuminate\Validation\Rule;
 use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * @OA\Tag(
- *     name="Packages",
- *     description="Operaciones para gestionar paquetes logísticos"
- * )
- */
 class PackageController extends Controller
 {
     public function __construct(
@@ -30,32 +24,6 @@ class PackageController extends Controller
     }
 
     /**
-     * @OA\Post(
-     *     path="/api/packages/import",
-     *     summary="Importar paquetes desde sistemas externos",
-     *     tags={"Packages"},
-     *     security={{"packages_apikey":{}}},
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(ref="#/components/schemas/PackageImportRequest")
-     *     ),
-     *     @OA\Response(
-     *         response=201,
-     *         description="Paquetes importados correctamente",
-     *         @OA\JsonContent(ref="#/components/schemas/PackageCollectionResponse")
-     *     ),
-     *     @OA\Response(
-     *         response=409,
-     *         description="Se detectaron paquetes duplicados",
-     *         @OA\JsonContent(ref="#/components/schemas/PackageConflictResponse")
-     *     ),
-     *     @OA\Response(
-     *         response=401,
-     *         description="API Key inválida",
-     *         @OA\JsonContent(ref="#/components/schemas/PackageErrorResponse")
-     *     )
-     * )
-     *
      * Método que importa paquetes desde sistemas externos a la plataforma.
      * @return JsonResponse
      * @author paul quezada (paul.quezada[at]haulmer.com)
@@ -132,52 +100,6 @@ class PackageController extends Controller
     }
 
     /**
-     * @OA\Patch(
-     *     path="/api/packages/{packageId}/status",
-     *     summary="Actualizar el estado de un paquete",
-     *     tags={"Packages"},
-     *     security={{"packages_apikey":{}}},
-     *     @OA\Parameter(
-     *         name="packageId",
-     *         in="path",
-     *         required=true,
-     *         description="Identificador único del paquete",
-     *         @OA\Schema(type="string", example="PKG-0001")
-     *     ),
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"status"},
-     *             @OA\Property(
-     *                 property="status",
-     *                 type="string",
-     *                 enum={"pending","in_transit","delivered"},
-     *                 example="delivered"
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Estado actualizado",
-     *         @OA\JsonContent(
-     *             @OA\Property(
-     *                 property="data",
-     *                 ref="#/components/schemas/PackageResource"
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Paquete no encontrado",
-     *         @OA\JsonContent(ref="#/components/schemas/PackageErrorResponse")
-     *     ),
-     *     @OA\Response(
-     *         response=401,
-     *         description="API Key inválida",
-     *         @OA\JsonContent(ref="#/components/schemas/PackageErrorResponse")
-     *     )
-     * )
-     *
      * Método que actualiza el estado de un paquete específico.
      * @return JsonResponse
      * @author paul quezada (paul.quezada[at]haulmer.com)
@@ -200,39 +122,6 @@ class PackageController extends Controller
     }
 
     /**
-     * @OA\Delete(
-     *     path="/api/packages/{packageId}",
-     *     summary="Eliminar un paquete pendiente",
-     *     tags={"Packages"},
-     *     security={{"packages_apikey":{}}},
-     *     @OA\Parameter(
-     *         name="packageId",
-     *         in="path",
-     *         required=true,
-     *         description="Identificador único del paquete",
-     *         @OA\Schema(type="string", example="PKG-0001")
-     *     ),
-     *     @OA\Response(
-     *         response=204,
-     *         description="Paquete eliminado"
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="El paquete no está en estado pendiente",
-     *         @OA\JsonContent(ref="#/components/schemas/PackageErrorResponse")
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Paquete no encontrado",
-     *         @OA\JsonContent(ref="#/components/schemas/PackageErrorResponse")
-     *     ),
-     *     @OA\Response(
-     *         response=401,
-     *         description="API Key inválida",
-     *         @OA\JsonContent(ref="#/components/schemas/PackageErrorResponse")
-     *     )
-     * )
-     *
      * Método que elimina un paquete cuando se encuentra en estado pendiente.
      * @return JsonResponse
      * @author paul quezada (paul.quezada[at]haulmer.com)
