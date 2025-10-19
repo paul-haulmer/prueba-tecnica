@@ -1,0 +1,14 @@
+.git
+vendor
+node_modules
+docker-compose.yml
+Dockerfile
+storage/app/public
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/testing/*
+storage/logs/*
+public/storage
+*.log
+.env
+*.sqlite
