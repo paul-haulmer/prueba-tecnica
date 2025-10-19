@@ -80,15 +80,9 @@ curl -X POST http://127.0.0.1:8000/api/packages/import \
 - Swagger UI: `GET /api/documentation`, acá esta la documentación en caso de que otras empresas/equipos requieran saber envío de peticiones y respuestas del microserverico.
 - JSON generado: `storage/api-docs/api-docs.json`
 
-## Acceso a la base de datos
+## Acceso a la base de datos (en caso de querer revisar)
 La aplicación utiliza SQLite. El archivo se encuentra en `database/database.sqlite`.
 
-- **Desde el host** (macOS/Linux):
-  ```bash
-  sqlite3 database/database.sqlite
-  sqlite> .tables
-  sqlite> SELECT * FROM packages;
-  ```
 - **Dentro del contenedor** (útil si levantaste Docker):
   ```bash
   docker compose exec app sqlite3 database/database.sqlite
