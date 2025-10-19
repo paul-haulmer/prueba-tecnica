@@ -23,13 +23,9 @@ Microservicio en Laravel 12 para gestionar paquetes logísticos: importar lotes 
    docker compose exec app php artisan key:generate
    ```
 
-Los volúmenes declarados (`vendor` y `storage`) permiten que las dependencias PHP y los archivos generados persistan entre reinicios, mientras que el código fuente se monta directamente desde el host para un flujo de trabajo en local.
-
-Comandos útiles adicionales:
-```bash
-docker compose exec app php artisan migrate --seed
-docker compose exec app php artisan test
-```
+La ejecución creará 2 contenedoses:
+1. logistics-app: Contiene PHP-FPM y ejecuta Laravel (migraciones, seeds, artisan). No expone los puertos directamente, solo atiende peticiones fastCGI.
+2. logistics-nginx: Actua como servidor web "frontal", escucha en 80 (mapeado al 8000 del host) y reenvía las solicitudes PHP al socket/host app:9000.
 
 ## Endpoints principales
 Todos los endpoints requieren el encabezado `X-API-Key: haulmer-2025-apikey` (se exponen en este MD únicamente porque es una prueba técnica, en contextos normales no agregaria registros de la apikey real).
