@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'packages' => [
+        'api_key' => env('LOGISTICS_API_KEY'),
+    ],
+
 ];
