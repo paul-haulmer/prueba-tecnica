@@ -89,10 +89,10 @@ class PackageController extends Controller
             'priority' => ['nullable', 'string', Rule::in(PackagePriority::values())],
         ]);
 
-        $packages = $this->service->list(
-            isset($filters['status']) ? PackageStatus::from($filters['status']) : null,
-            isset($filters['priority']) ? PackagePriority::from($filters['priority']) : null
-        );
+        $filtersStatus = isset($filters['status']) ? PackageStatus::from($filters['status']) : null;
+        $filtersPriority = isset($filters['priority']) ? PackagePriority::from($filters['priority']) : null;
+
+        $packages = $this->service->list($filtersStatus, $filtersPriority);
 
         return response()->json([
             'data' => $packages->map(fn (Package $package): array => $this->transform($package))->values(),
@@ -146,6 +146,12 @@ class PackageController extends Controller
         return response()->json([], Response::HTTP_NO_CONTENT);
     }
 
+    /**
+     * Método que transforma un modelo Package a un array estructuradp
+     * @return JsonResponse
+     * @author paul quezada (paul.quezada[at]haulmer.com)
+     * @version 2025-10-21
+     */
     private function transform(Package $package): array
     {
         return [

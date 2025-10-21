@@ -9,12 +9,12 @@ enum PackageStatus: string
     case DELIVERED = 'delivered';
 
     /**
-     * Return all supported values as array.
-     *
+     * Devuelve todos los valores de los status de un paquete.
+     * Por ejemplo siempre retornara -> ['pending', 'in_transit', 'delivered'].
      * @return array<int, string>
      */
     public static function values(): array
     {
-        return array_map(static fn (self $status): string => $status->value, self::cases());
+        return array_column(self::cases(), 'value');
     }
 }

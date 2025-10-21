@@ -17,6 +17,7 @@ class ImportPackagesRequest extends FormRequest
      */
     public function authorize(): bool
     {
+        // Se deja en true porque no se necesita lógica de autorización
         return true;
     }
 

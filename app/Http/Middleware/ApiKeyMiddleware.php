@@ -20,9 +20,15 @@ class ApiKeyMiddleware
         $configuredKey = config('services.packages.api_key');
         $providedKey = $request->header('X-API-Key');
 
-        if (! $configuredKey || ! $providedKey || ! hash_equals($configuredKey, (string) $providedKey)) {
+        if(!$configuredKey || !$providedKey){
             return response()->json([
-                'message' => 'Invalid or missing API key.',
+                'message' => 'Missing API key.',
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        if (! hash_equals($configuredKey, (string) $providedKey)) {
+            return response()->json([
+                'message' => 'Invalid API key.',
             ], Response::HTTP_UNAUTHORIZED);
         }
 
