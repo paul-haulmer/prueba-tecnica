@@ -9,12 +9,12 @@ enum PackagePriority: string
     case HIGH = 'high';
 
     /**
-     * Return all supported values as array.
-     *
+     * Devuelve todos los valores de las prioridades.
+     * Por ejemplo siempre retornara -> ['low', 'medium', 'high'].
      * @return array<int, string>
      */
     public static function values(): array
     {
-        return array_map(static fn (self $priority): string => $priority->value, self::cases());
+       return array_column(self::cases(), 'value');
     }
 }

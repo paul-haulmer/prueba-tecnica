@@ -108,7 +108,10 @@ Los tests cubren la lógica del servicio (importaciones, transiciones y eliminac
 
 ## Diseño y arquitectura
 - **Framework & stack**: Laravel 12 con SQLite para simplicidad y portabilidad. La documentación OpenAPI se genera mediante `l5-swagger`. Se eligió esta versión porque es la más actual y estable.
-- **Capas**: Los controladores solo se encargan de lo básico y delegan la lógica al `PackageService`, que maneja las reglas del negocio (como evitar duplicados o controlar cuándo se puede eliminar o cambiar algo). El `PackageRepository` se encarga de hablar con la base de datos, así el servicio no depende directamente de Eloquent.
+- **Capas**: 
+  - `PackageController` expone los endpoints REST (`import`, `index`, `update status`, `delete`) y orquesta las entradas/salidas HTTP, validación via Form Requests y respuestas JSON.
+  - `PackageService` concentra la lógica de negocio: validaciones de duplicados, normalización de fechas, transiciones de estado y verificación de reglas previas a eliminar o actualizar paquetes.
+  - `PackageRepository` abstrae la capa de persistencia con Eloquent (insertar, consultar, eliminar) para mantener la lógica independiente del ORM. En simples palabras se encarga de comunicación a la bd.
 - **Seguridad**: Middleware `ApiKeyMiddleware` exige el header `X-API-Key` en todas las rutas de la API. La clave se parametriza por configuración y se documenta en Swagger para servicios que ocuparan el microservicio.
 - **Docs & DX**: Anotaciones OpenAPI en controladores e invariantes de dominio generan automáticamente Swagger UI y archivos JSON versionados. Es importante manejar la documentación de los microservicios sobre todo si este va a ser útilizado en otras empresas.
 - **DevOps**: El Dockerfile multi-stage y docker-compose hacen que todo se ejecute igual en cualquier entorno. El entrypoint se encarga de correr las migraciones, cargar los datos iniciales y regenerar la documentación automáticamente.
